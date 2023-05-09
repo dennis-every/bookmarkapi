@@ -3,6 +3,9 @@ require 'rails_helper'
 describe 'PUT /bookmarks' do
   let!(:bookmark) { Bookmark.create(url: 'http://localhost:3000', title: 'Demo title') }
 
+  # create a user before tests are run
+  let!(:user) { User.create(username: 'demo_user', authentication_token: 'abcdef') }
+
   it 'valid bookmark atttributes' do
     # send put request
     put "/bookmarks/#{bookmark.id}", params: {
@@ -10,6 +13,9 @@ describe 'PUT /bookmarks' do
         url: 'http://localhost:5000',
         title: 'Another title'
       }
+    }, headers: {
+      'X-Username': user.username,
+      'X-Token': user.authentication_token
     }
 
     # response should have HTTP Status 200 Ok
@@ -31,6 +37,9 @@ describe 'PUT /bookmarks' do
         url: '',
         title: 'Another title'
       }
+    }, headers: {
+      'X-Username': user.username,
+      'X-Token': user.authentication_token
     }
 
     # response should have HTTP Status 422 Unprocessable entity
